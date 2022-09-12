@@ -13,7 +13,10 @@ public class PayRequest {
     // 결제 금액
     Integer payAmount;
 
+
+
     public PayRequest(PayMethodType payMethodType, ConvenienceType convenienceType, Integer payAmount) {
+        //결제수단, 편의점종류, 결제금액
         this.payMethodType = payMethodType;
         this.convenienceType = convenienceType;
         this.payAmount = payAmount;
