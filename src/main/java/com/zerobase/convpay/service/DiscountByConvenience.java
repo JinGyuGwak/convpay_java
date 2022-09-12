@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 public class DiscountByConvenience implements DiscountInterface{
     @Override
     public Integer getDiscountedAmount(PayRequest payRequest) {
+        System.out.println("DiscountByConvenience called");
 
         switch (payRequest.getConvenienceType()){
             case G25:
