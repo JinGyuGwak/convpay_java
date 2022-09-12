@@ -6,6 +6,10 @@ import com.zerobase.convpay.type.*;
 public class ConveniencePayService {  //편결이 몸통 부분
     private final MoneyAdapter moneyAdapter = new MoneyAdapter();
     private final CardAdapter cardAdapter = new CardAdapter();
+    private final DiscountInterface discountInterface = new DiscountByPayMethod();
+    
+    //private final DiscountInterface discountInterface = new DiscountAll();
+    //private final DiscountInterface discountInterface = new DiscountByConvenience();
     //private final PointAdapter pointAdapter = new PointAdater();
     // dip를 만족하면 이렇게 새로 추가 되어도 밑에 조건문에 하나만 추가하면 됨
 
@@ -17,7 +21,10 @@ public class ConveniencePayService {  //편결이 몸통 부분
         }else{
             paymentInterface=moneyAdapter;
         }
-        PaymentResult payment = paymentInterface.payment(payRequest.getPayAmount());
+
+        Integer discountedAmount = discountInterface.getDiscountedAmount(payRequest);
+        PaymentResult payment = paymentInterface.payment(discountedAmount);
+
 //        CardUseResult cardUseResult;
 //        MoneyUseResult moneyUseResult;
 //
@@ -30,13 +37,12 @@ public class ConveniencePayService {  //편결이 몸통 부분
 //            moneyUseResult = moneyAdapter.use(payRequest.getPayAmount());
 //        }
 
-
         if(payment==PaymentResult.PAYMENT_FAIL){
             return new PayResponse(PayResult.FAIL, 0);
         }
 
         //Success Case
-        return new PayResponse(PayResult.SUCCESS, payRequest.getPayAmount());
+        return new PayResponse(PayResult.SUCCESS, discountedAmount);
     }
     public PayCancelResponse payCancel(PayCancelRequest payCancelRequest){
 
