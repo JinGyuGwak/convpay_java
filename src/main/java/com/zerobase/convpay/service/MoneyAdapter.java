@@ -3,7 +3,7 @@ package com.zerobase.convpay.service;
 import com.zerobase.convpay.type.MoneyUseCancelResult;
 import com.zerobase.convpay.type.MoneyUseResult;
 
-public class MoneyAdapter {
+public class MoneyAdapter { //돈이 들어있는 통장 느낌
     public MoneyUseResult use(Integer payAmount){
         System.out.println("MoneyAdapter.use :" + payAmount);
 

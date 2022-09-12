@@ -1,21 +1,32 @@
 package com.zerobase.convpay.service;
 
 import com.zerobase.convpay.dto.*;
-import com.zerobase.convpay.type.MoneyUseCancelResult;
-import com.zerobase.convpay.type.MoneyUseResult;
-import com.zerobase.convpay.type.PayCancelResult;
-import com.zerobase.convpay.type.PayResult;
+import com.zerobase.convpay.type.*;
 
 public class ConveniencePayService {  //편결이 몸통 부분
     private final MoneyAdapter moneyAdapter = new MoneyAdapter();
+    private final CardAdapter cardAdapter = new CardAdapter();
+
 
     public PayResponse pay(PayRequest payRequest){
-        MoneyUseResult moneyUseResult =
-                moneyAdapter.use(payRequest.getPayAmount());
+        CardUseResult cardUseResult;
+        MoneyUseResult moneyUseResult;
 
-        if(moneyUseResult==MoneyUseResult.USE_FAIL) {
+        if(payRequest.getPayMethodType() == PayMethodType.CARD){
+            cardAdapter.authorization();
+            cardAdapter.approval();
+            cardUseResult = cardAdapter.capture(payRequest.getPayAmount());
+
+        }else {
+            moneyUseResult = moneyAdapter.use(payRequest.getPayAmount());
+        }
+
+        if(cardUseResult==MoneyUseResult.USE_FAIL ||
+                moneyUseResult == MoneyUseResult.USE_FAIL) {
             return new PayResponse(PayResult.FAIL, 0);
         }
+
+        //Success Case
         return new PayResponse(PayResult.SUCCESS, payRequest.getPayAmount());
     }
     public PayCancelResponse payCancel(PayCancelRequest payCancelRequest){
